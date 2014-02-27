@@ -2,7 +2,10 @@ package com.skorulis.drone1;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -13,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
@@ -23,6 +27,8 @@ public class MyGdxGame implements ApplicationListener {
     public ModelBatch modelBatch;
     public Environment environment;
     public CameraInputController camController;
+    public FPSLogger fpsLogger;
+    public AssetManager assets;
 	
 	@Override
 	public void create() {
@@ -41,11 +47,17 @@ public class MyGdxGame implements ApplicationListener {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
         
-        ModelBuilder modelBuilder = new ModelBuilder();
+        /*ModelBuilder modelBuilder = new ModelBuilder();
         model = modelBuilder.createBox(5f, 5f, 5f, 
             new Material(ColorAttribute.createDiffuse(Color.GREEN)),
             Usage.Position | Usage.Normal);
+        instance = new ModelInstance(model);*/
+        
+        ModelLoader loader = new ObjLoader();
+        model = loader.loadModel(Gdx.files.internal("data/ship.obj"));
         instance = new ModelInstance(model);
+        
+        fpsLogger = new FPSLogger();
 	}
 
 	@Override
@@ -63,6 +75,7 @@ public class MyGdxGame implements ApplicationListener {
         modelBatch.begin(cam);
         modelBatch.render(instance, environment);
         modelBatch.end();
+        fpsLogger.log();
 	}
 
 	@Override
