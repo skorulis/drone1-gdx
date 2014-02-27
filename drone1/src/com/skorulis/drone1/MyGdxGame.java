@@ -12,11 +12,13 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 public class MyGdxGame implements ApplicationListener {
@@ -24,6 +26,7 @@ public class MyGdxGame implements ApplicationListener {
 	public Model model;
     public ModelInstance instance;
     public ModelBatch modelBatch;
+    public Environment environment;
 	
 	@Override
 	public void create() {
@@ -34,6 +37,10 @@ public class MyGdxGame implements ApplicationListener {
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
+        
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
         
         ModelBuilder modelBuilder = new ModelBuilder();
         model = modelBuilder.createBox(5f, 5f, 5f, 
@@ -54,7 +61,7 @@ public class MyGdxGame implements ApplicationListener {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
         modelBatch.begin(cam);
-        modelBatch.render(instance);
+        modelBatch.render(instance, environment);
         modelBatch.end();
 	}
 
