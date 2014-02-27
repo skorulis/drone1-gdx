@@ -35,7 +35,7 @@ public class MyGdxGame implements ApplicationListener {
 	public void create() {
 		modelBatch = new ModelBatch();
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(10f, 10f, 10f);
+        cam.position.set(5f, 5f, 5f);
         cam.lookAt(0,0,0);
         cam.near = 0.1f;
         cam.far = 300f;
@@ -49,14 +49,14 @@ public class MyGdxGame implements ApplicationListener {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         assets = new AssetManager();
-        assets.load("data/ship.obj", Model.class);
+        assets.load("data/sphere.g3db", Model.class);
         loading = true;
         
         fpsLogger = new FPSLogger();
 	}
 	
 	private void doneLoading() {
-        model = assets.get("data/ship.obj", Model.class);
+        model = assets.get("data/sphere.g3db", Model.class);
         instance = new ModelInstance(model);
         loading = false;
     }
