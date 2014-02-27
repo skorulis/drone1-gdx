@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 public class MyGdxGame implements ApplicationListener {
@@ -27,6 +28,7 @@ public class MyGdxGame implements ApplicationListener {
     public ModelInstance instance;
     public ModelBatch modelBatch;
     public Environment environment;
+    public CameraInputController camController;
 	
 	@Override
 	public void create() {
@@ -37,6 +39,9 @@ public class MyGdxGame implements ApplicationListener {
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
+        
+        camController = new CameraInputController(cam);
+        Gdx.input.setInputProcessor(camController);
         
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -56,7 +61,8 @@ public class MyGdxGame implements ApplicationListener {
 	}
 
 	@Override
-	public void render() {		
+	public void render() {
+		camController.update();
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
