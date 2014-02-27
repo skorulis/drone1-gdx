@@ -29,6 +29,7 @@ public class MyGdxGame implements ApplicationListener {
     public CameraInputController camController;
     public FPSLogger fpsLogger;
     public AssetManager assets;
+    public boolean loading;
 	
 	@Override
 	public void create() {
@@ -46,19 +47,19 @@ public class MyGdxGame implements ApplicationListener {
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-        
-        /*ModelBuilder modelBuilder = new ModelBuilder();
-        model = modelBuilder.createBox(5f, 5f, 5f, 
-            new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-            Usage.Position | Usage.Normal);
-        instance = new ModelInstance(model);*/
-        
-        ModelLoader loader = new ObjLoader();
-        model = loader.loadModel(Gdx.files.internal("data/ship.obj"));
-        instance = new ModelInstance(model);
+
+        assets = new AssetManager();
+        assets.load("data/ship.obj", Model.class);
+        loading = true;
         
         fpsLogger = new FPSLogger();
 	}
+	
+	private void doneLoading() {
+        model = assets.get("data/ship.obj", Model.class);
+        instance = new ModelInstance(model);
+        loading = false;
+    }
 
 	@Override
 	public void dispose() {
@@ -68,6 +69,14 @@ public class MyGdxGame implements ApplicationListener {
 
 	@Override
 	public void render() {
+		if(loading) {
+			if(assets.update()) {
+				doneLoading();
+			} else {
+				return;
+			}
+		}
+		
 		camController.update();
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
