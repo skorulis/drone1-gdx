@@ -2,12 +2,15 @@ package com.skorulis.drone1.unit;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.skorulis.drone1.def.TurretPointDef;
 import com.skorulis.drone1.def.UnitDef;
 
 public class DroneUnit {
@@ -17,6 +20,7 @@ public class DroneUnit {
 	private ModelInstance hullInstance;
 	private ModelInstance[] turrets;
 	private Vector3 position;
+	private BoundingBox hullBounds;
 	
 	public DroneUnit(UnitDef def) {
 		this.def = def;
@@ -33,6 +37,7 @@ public class DroneUnit {
 				turrets[i] = new ModelInstance(model);
 			}
 		}
+		hullBounds = hullInstance.calculateBoundingBox(new BoundingBox());
 		updateModelPositions();
 	}
 	
@@ -48,12 +53,18 @@ public class DroneUnit {
 	
 	private void updateModelPositions() {
 		hullInstance.transform.setTranslation(position);
+		
 		for(int i = 0; i < turrets.length; ++i) {
 			if(turrets[i] != null) {
-				Vector3 vec = def.hull.turretPoints.get(i).position;
+				TurretPointDef tpd = def.hull.turretPoints.get(i);
+				
+				Vector3 vec = tpd.getTurretPos(hullBounds);
 				turrets[i].transform.setTranslation(vec);
+				Gdx.app.log("A", "Size " + hullBounds);
 			}
 		}
 	}
+	
+	
 	
 }

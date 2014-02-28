@@ -100,7 +100,7 @@ public class MyGdxGame implements ApplicationListener {
         modelBatch.begin(cam);
         unit.render(modelBatch, environment);
         modelBatch.end();
-        fpsLogger.log();
+        //fpsLogger.log();
 	}
 
 	@Override
