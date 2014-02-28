@@ -3,6 +3,8 @@ package com.skorulis.drone1.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.math.Vector3;
+
 
 public class DefManager {
 
@@ -20,6 +22,7 @@ public class DefManager {
 		HullDef h = new HullDef();
 		h.name = "hull1";
 		h.modelName = "data/hull1.g3db";
+		h.addTurretPoint( new Vector3(0, 1, 0));
 		hulls.put(h.name, h);
 	}
 	

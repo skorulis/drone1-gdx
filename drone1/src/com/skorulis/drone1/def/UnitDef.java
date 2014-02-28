@@ -9,7 +9,7 @@ public class UnitDef extends BaseDef {
 	
 	public UnitDef(HullDef hull) {
 		this.hull = hull;
-		turrets = new TurretDef[1];
+		turrets = new TurretDef[hull.maxTurrets()];
 	}
 	
 	public ArrayList<String> allModels() {
@@ -25,6 +25,14 @@ public class UnitDef extends BaseDef {
 	
 	public void setTurret(int pos, TurretDef turret) {
 		turrets[pos] = turret;
+	}
+	
+	public int turretCount() {
+		int count = 0;
+		for(TurretDef def : turrets) {
+			count += def != null ? 1 : 0;
+		}
+		return count;
 	}
 	
 }

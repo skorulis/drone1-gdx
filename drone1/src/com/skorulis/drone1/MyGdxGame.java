@@ -57,6 +57,7 @@ public class MyGdxGame implements ApplicationListener {
 
         defManager = new DefManager();
         UnitDef uDef = new UnitDef(defManager.getHull("hull1"));
+        uDef.setTurret(0, defManager.getTurret("turret1"));
         unit = new DroneUnit(uDef);
         
         assets = new AssetManager();
