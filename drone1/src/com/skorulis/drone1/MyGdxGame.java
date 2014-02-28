@@ -49,14 +49,14 @@ public class MyGdxGame implements ApplicationListener {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         assets = new AssetManager();
-        assets.load("data/sphere.g3db", Model.class);
+        assets.load("data/turret1.g3db", Model.class);
         loading = true;
         
         fpsLogger = new FPSLogger();
 	}
 	
 	private void doneLoading() {
-        model = assets.get("data/sphere.g3db", Model.class);
+        model = assets.get("data/turret1.g3db", Model.class);
         instance = new ModelInstance(model);
         loading = false;
     }
