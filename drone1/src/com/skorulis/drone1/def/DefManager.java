@@ -22,7 +22,7 @@ public class DefManager {
 		HullDef h = new HullDef();
 		h.name = "hull1";
 		h.modelName = "data/hull1.g3db";
-		h.addTurretPoint( new Vector3(0, 1, 0));
+		h.addTurretPoint( new Vector3(0, 1, 0), 1.0f);
 		hulls.put(h.name, h);
 	}
 	

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.skorulis.drone1.def.DefManager;
 import com.skorulis.drone1.def.UnitDef;
 import com.skorulis.drone1.unit.DroneUnit;
@@ -37,6 +38,7 @@ public class MyGdxGame implements ApplicationListener {
     
     public DefManager defManager;
     public DroneUnit unit;
+    public float t = 0;
 	
 	@Override
 	public void create() {
@@ -92,6 +94,7 @@ public class MyGdxGame implements ApplicationListener {
 				return;
 			}
 		}
+		t += Gdx.graphics.getDeltaTime();
 		
 		camController.update();
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -101,6 +104,12 @@ public class MyGdxGame implements ApplicationListener {
         unit.render(modelBatch, environment);
         modelBatch.end();
         //fpsLogger.log();
+        
+        float x = (float) Math.sin(t);
+        float z = (float) Math.cos(t);
+        
+        unit.setPosition(new Vector3(x,0.0f,z));
+        
 	}
 
 	@Override

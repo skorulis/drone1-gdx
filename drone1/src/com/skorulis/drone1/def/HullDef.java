@@ -18,8 +18,8 @@ public class HullDef extends BaseDef {
 		return new ArrayList<String>(Arrays.asList(modelName));
 	}
 	
-	public void addTurretPoint(Vector3 position) {
-		turretPoints.add(new TurretPointDef(position));
+	public void addTurretPoint(Vector3 position, float size) {
+		turretPoints.add(new TurretPointDef(position,size));
 	}
 	
 	public int maxTurrets() {
