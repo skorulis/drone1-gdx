@@ -7,10 +7,13 @@ import java.util.Map;
 public class DefManager {
 
 	public Map<String,HullDef> hulls;
+	public Map<String,TurretDef> turrets;
 	
 	public DefManager() {
 		hulls = new HashMap<String,HullDef>();
+		turrets = new HashMap<String, TurretDef>();
 		loadHulls();
+		loadTurrets();
 	}
 	
 	private void loadHulls() {
@@ -20,10 +23,25 @@ public class DefManager {
 		hulls.put(h.name, h);
 	}
 	
+	private void loadTurrets() {
+		TurretDef t = new TurretDef();
+		t.name = "turret1";
+		t.modelName = "turret1.g3db";
+		turrets.put(t.name, t);
+	}
+	
 	public HullDef getHull(String name) {
 		HullDef def = hulls.get(name);
 		if(def == null) {
 			throw new IllegalArgumentException("No hull named " + name);
+		}
+		return def;
+	}
+	
+	public TurretDef getTurret(String name) {
+		TurretDef def = turrets.get(name);
+		if(def == null) {
+			throw new IllegalArgumentException("No turret named " + name);
 		}
 		return def;
 	}
