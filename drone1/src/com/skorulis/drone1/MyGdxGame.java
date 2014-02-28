@@ -1,5 +1,7 @@
 package com.skorulis.drone1;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -19,10 +21,12 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.skorulis.drone1.def.DefManager;
+import com.skorulis.drone1.def.UnitDef;
+import com.skorulis.drone1.unit.DroneUnit;
 
 public class MyGdxGame implements ApplicationListener {
 	public PerspectiveCamera cam;
-	public Model model;
     public ModelInstance instance;
     public ModelBatch modelBatch;
     public Environment environment;
@@ -30,6 +34,9 @@ public class MyGdxGame implements ApplicationListener {
     public FPSLogger fpsLogger;
     public AssetManager assets;
     public boolean loading;
+    
+    public DefManager defManager;
+    public DroneUnit unit;
 	
 	@Override
 	public void create() {
@@ -48,23 +55,31 @@ public class MyGdxGame implements ApplicationListener {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
+        defManager = new DefManager();
+        UnitDef uDef = new UnitDef(defManager.getHull("hull1"));
+        unit = new DroneUnit(uDef);
+        
         assets = new AssetManager();
-        assets.load("data/turret1.g3db", Model.class);
+        
+        ArrayList<String> models = new ArrayList<String>();
+        models.addAll(unit.def.allModels());
+        for(String s : models) {
+        	assets.load(s, Model.class);
+        }
         loading = true;
         
         fpsLogger = new FPSLogger();
 	}
 	
 	private void doneLoading() {
-        model = assets.get("data/turret1.g3db", Model.class);
-        instance = new ModelInstance(model);
+		unit.setup(assets);
         loading = false;
     }
 
 	@Override
 	public void dispose() {
-		model.dispose();
 		modelBatch.dispose();
+		assets.clear();
 	}
 
 	@Override
@@ -82,7 +97,7 @@ public class MyGdxGame implements ApplicationListener {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
         modelBatch.begin(cam);
-        modelBatch.render(instance, environment);
+        unit.render(modelBatch, environment);
         modelBatch.end();
         fpsLogger.log();
 	}

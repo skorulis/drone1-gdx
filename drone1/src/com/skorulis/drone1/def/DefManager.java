@@ -19,14 +19,14 @@ public class DefManager {
 	private void loadHulls() {
 		HullDef h = new HullDef();
 		h.name = "hull1";
-		h.modelName = "hull1.g3db";
+		h.modelName = "data/hull1.g3db";
 		hulls.put(h.name, h);
 	}
 	
 	private void loadTurrets() {
 		TurretDef t = new TurretDef();
 		t.name = "turret1";
-		t.modelName = "turret1.g3db";
+		t.modelName = "data/turret1.g3db";
 		turrets.put(t.name, t);
 	}
 	
