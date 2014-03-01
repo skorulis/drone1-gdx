@@ -38,6 +38,8 @@ public class MyGdxGame implements ApplicationListener {
     
     public DefManager defManager;
     public DroneUnit unit;
+    
+    public DroneUnit unit2;
     public float t = 0;
 	
 	@Override
@@ -61,6 +63,9 @@ public class MyGdxGame implements ApplicationListener {
         UnitDef uDef = new UnitDef(defManager.getHull("hull1"));
         uDef.setTurret(0, defManager.getTurret("turret1"));
         unit = new DroneUnit(uDef);
+        unit2 = new DroneUnit(uDef);
+        
+        unit2.target = unit;
         
         assets = new AssetManager();
         
@@ -76,6 +81,7 @@ public class MyGdxGame implements ApplicationListener {
 	
 	private void doneLoading() {
 		unit.setup(assets);
+		unit2.setup(assets);
         loading = false;
     }
 
@@ -94,7 +100,9 @@ public class MyGdxGame implements ApplicationListener {
 				return;
 			}
 		}
-		t += Gdx.graphics.getDeltaTime();
+		float delta = Gdx.graphics.getDeltaTime();
+		
+		t += delta;
 		
 		camController.update();
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -102,13 +110,17 @@ public class MyGdxGame implements ApplicationListener {
 		
         modelBatch.begin(cam);
         unit.render(modelBatch, environment);
+        unit2.render(modelBatch, environment);
         modelBatch.end();
         //fpsLogger.log();
         
-        float x = (float) Math.sin(t);
-        float z = (float) Math.cos(t);
+        float x = (float) Math.sin(t) * 5;
+        float z = (float) Math.cos(t) * 4;
         
         unit.setPosition(new Vector3(x,0.0f,z));
+        
+        unit.update(delta);
+		unit2.update(delta);
         
 	}
 

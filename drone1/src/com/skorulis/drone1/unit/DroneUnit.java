@@ -17,13 +17,15 @@ public class DroneUnit {
 	
 	public UnitDef def;
 	private ModelInstance hullInstance;
-	private ModelInstance[] turrets;
+	private DroneTurret[] turrets;
 	private Vector3 position;
 	private BoundingBox hullBounds;
 	
+	public DroneUnit target;
+	
 	public DroneUnit(UnitDef def) {
 		this.def = def;
-		turrets = new ModelInstance[def.hull.maxTurrets()];
+		turrets = new DroneTurret[def.hull.maxTurrets()];
 		position = new Vector3(0,0,0);
 	}
 	
@@ -32,25 +34,37 @@ public class DroneUnit {
 		hullInstance = new ModelInstance(model);
 		for(int i = 0; i < def.turrets.length; ++i) {
 			if(def.turrets[i] != null) {
-				model = assets.get(def.turrets[i].modelName);
-				turrets[i] = new ModelInstance(model);
-				def.turrets[i].modelLoaded(model);
-				float scale = def.hull.turretPoints.get(i).getScale(def.turrets[i].modelBounding);
-				turrets[i].transform = turrets[i].transform.scl(scale);
+				turrets[i] = new DroneTurret(this,def.hull.turretPoints.get(i),def.turrets[i],assets);
 			}
 		}
 		hullBounds = hullInstance.calculateBoundingBox(new BoundingBox());
 		updateModelPositions();
 	}
 	
+	public void update(float delta) {
+		for(DroneTurret dt: turrets) {
+			if(dt != null) {
+				//dt.update(delta);
+			}
+		}
+		updateModelPositions();
+	}
+	
 	public void render(ModelBatch batch, Environment environment) {
-		batch.render(Arrays.asList(turrets),environment);
+		for(DroneTurret dt : turrets) {
+			if(dt != null) {
+				dt.render(batch, environment);
+			}
+		}
 		batch.render(hullInstance,environment);
 	}
 	
 	public void setPosition(Vector3 vec) {
 		this.position = vec;
-		updateModelPositions();
+	}
+	
+	public Vector3 position() {
+		return position;
 	}
 	
 	private void updateModelPositions() {
@@ -58,9 +72,12 @@ public class DroneUnit {
 		
 		for(int i = 0; i < turrets.length; ++i) {
 			if(turrets[i] != null) {
+				if(target != null) {
+					turrets[i].modelInstance.transform.setToLookAt(position(), target.position(), new Vector3(0,1,0));
+				}
 				TurretPointDef tpd = def.hull.turretPoints.get(i);
 				Vector3 vec = tpd.getTurretPos(hullBounds);
-				turrets[i].transform.setTranslation(vec.add(position));
+				turrets[i].modelInstance.transform.setTranslation(vec.add(position));
 			}
 		}
 	}
