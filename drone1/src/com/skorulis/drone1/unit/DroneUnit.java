@@ -1,15 +1,13 @@
 package com.skorulis.drone1.unit;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.skorulis.drone1.def.TurretPointDef;
 import com.skorulis.drone1.def.UnitDef;
 
 public class DroneUnit {
@@ -19,7 +17,7 @@ public class DroneUnit {
 	private ModelInstance hullInstance;
 	private DroneTurret[] turrets;
 	private Vector3 position;
-	private BoundingBox hullBounds;
+	public BoundingBox hullBounds;
 	
 	public DroneUnit target;
 	
@@ -32,19 +30,21 @@ public class DroneUnit {
 	public void setup(AssetManager assets) {
 		Model model = assets.get(def.hull.modelName,Model.class);
 		hullInstance = new ModelInstance(model);
+		hullBounds = hullInstance.calculateBoundingBox(new BoundingBox());
 		for(int i = 0; i < def.turrets.length; ++i) {
 			if(def.turrets[i] != null) {
-				turrets[i] = new DroneTurret(this,def.hull.turretPoints.get(i),def.turrets[i],assets);
+				turrets[i] = new DroneTurret(this,def.hull.turretPoints.get(i),def.turrets[i]);
+				turrets[i].setup(assets);
 			}
 		}
-		hullBounds = hullInstance.calculateBoundingBox(new BoundingBox());
+		
 		updateModelPositions();
 	}
 	
 	public void update(float delta) {
 		for(DroneTurret dt: turrets) {
 			if(dt != null) {
-				//dt.update(delta);
+				dt.update(delta);
 			}
 		}
 		updateModelPositions();
@@ -75,11 +75,13 @@ public class DroneUnit {
 				if(target != null) {
 					turrets[i].modelInstance.transform.setToLookAt(position(), target.position(), new Vector3(0,1,0));
 				}
-				TurretPointDef tpd = def.hull.turretPoints.get(i);
-				Vector3 vec = tpd.getTurretPos(hullBounds);
-				turrets[i].modelInstance.transform.setTranslation(vec.add(position));
+				
 			}
 		}
+	}
+	
+	public Matrix4 absTransform() {
+		return hullInstance.transform;
 	}
 	
 	

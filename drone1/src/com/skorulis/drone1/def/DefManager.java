@@ -30,6 +30,7 @@ public class DefManager {
 		TurretDef t = new TurretDef();
 		t.name = "turret1";
 		t.modelName = "data/turret1.g3db";
+		t.forward = new Vector3(0,0,1);
 		turrets.put(t.name, t);
 	}
 	

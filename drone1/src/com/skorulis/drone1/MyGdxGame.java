@@ -66,6 +66,7 @@ public class MyGdxGame implements ApplicationListener {
         unit2 = new DroneUnit(uDef);
         
         unit2.target = unit;
+        unit.target = unit2;
         
         assets = new AssetManager();
         

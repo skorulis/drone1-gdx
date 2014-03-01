@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class TurretDef extends BaseDef {
 
 	public String modelName;
 	public BoundingBox modelBounding;
+	public Vector3 forward;
 	
 	public ArrayList<String> allModels() {
 		return new ArrayList<String>(Arrays.asList(modelName));
