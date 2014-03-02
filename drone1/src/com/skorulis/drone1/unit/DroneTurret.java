@@ -20,7 +20,7 @@ public class DroneTurret implements SceneNode {
 	private TurretPointDef pointDef;
 	private TurretDef def;
 	private float scale;
-	private Matrix4 scaleMatrix;
+	private Vector3 offset;
 	
 	public DroneTurret(DroneUnit unit, TurretPointDef pointDef, TurretDef def) {
 		this.parent = unit;
@@ -34,23 +34,22 @@ public class DroneTurret implements SceneNode {
 		def.modelLoaded(model);
 		modelInstance = new ModelInstance(model);
 		
-		Vector3 vec = pointDef.getTurretPos(parent.hullBounds);
-		relTransform.setTranslation(vec);
+		offset = pointDef.getTurretPos(parent.hullBounds);
 		scale = pointDef.getScale(def.modelBounding);
-		scaleMatrix = new Matrix4();   
-		scaleMatrix.setToScaling(scale, scale, scale);
 	}
 	
 	public void update(float delta) {
 		if(parent.target != null) {
+			relTransform.setToTranslation(offset);
+			relTransform.scl(scale);
 			Vector3 loc = absTransform().getTranslation(new Vector3());
 			Vector3 tLoc = parent.target.absTransform().getTranslation(new Vector3());
 			Vector3 dir = tLoc.sub(loc).nor();
+			dir.y = 0;
 			float angle = def.forward.dot(dir);
 			angle = (float)Math.acos(angle);
 			Vector3 cross = def.forward.cpy().crs(dir);
-			relTransform.setToRotation(cross, (float)(angle * 180.0 / Math.PI));
-			relTransform.mul(scaleMatrix);
+			relTransform.rotate(cross, (float)(angle * 180.0 / Math.PI));
 		}
 	}
 	
