@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.skorulis.drone1.def.DefManager;
 import com.skorulis.drone1.def.UnitDef;
+import com.skorulis.drone1.level.GameLevel;
 import com.skorulis.drone1.unit.DroneUnit;
 
 public class MyGdxGame implements ApplicationListener {
@@ -38,6 +39,7 @@ public class MyGdxGame implements ApplicationListener {
     
     public DefManager defManager;
     public DroneUnit unit;
+    public GameLevel level;
     
     public DroneUnit unit2;
     public float t = 0;
@@ -68,6 +70,8 @@ public class MyGdxGame implements ApplicationListener {
         unit2.target = unit;
         unit.target = unit2;
         
+        level = new GameLevel(10,10);
+        
         assets = new AssetManager();
         
         ArrayList<String> models = new ArrayList<String>();
@@ -89,6 +93,7 @@ public class MyGdxGame implements ApplicationListener {
 	@Override
 	public void dispose() {
 		modelBatch.dispose();
+		level.dispose();
 		assets.clear();
 	}
 
@@ -110,6 +115,7 @@ public class MyGdxGame implements ApplicationListener {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
         modelBatch.begin(cam);
+        level.render(modelBatch, environment);
         unit.render(modelBatch, environment);
         unit2.render(modelBatch, environment);
         modelBatch.end();
