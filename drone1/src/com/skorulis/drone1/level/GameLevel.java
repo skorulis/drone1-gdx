@@ -1,7 +1,11 @@
 package com.skorulis.drone1.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -9,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
@@ -24,13 +29,38 @@ public class GameLevel implements SceneNode, Disposable{
 		transform = new Matrix4();
 		ModelBuilder builder = new ModelBuilder();
 		
-		Texture texture = new Texture(Gdx.files.internal("data/rock.png"));
-		
 		Material material = new Material();
+		Texture texture = new Texture(Gdx.files.internal("data/rock.png"));
+		texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		material.set(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		
-		model = builder.createRect(0, 0, 0, 0, 0, depth, width, 0, depth, width, 0, 0, 0, 1, 0, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		//model = builder.createRect(0, 0, 0, 0, 0, depth, width, 0, depth, width, 0, 0, 0, 1, 0, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		//model.manageDisposable(texture);
+		model = createFloor(width, depth);
 		modelInstance = new ModelInstance(model);
+	}
+	
+	public Model createFloor(int w, int d) {
+		final Mesh mesh = new Mesh(true, 4, 6, new VertexAttribute(
+                Usage.Position, 3, "a_position"), new VertexAttribute(
+                Usage.TextureCoordinates, 2, "a_texCoords")); 
+        mesh.setVertices(new float[]
+                { 0, 0f, 0, 0, 0,
+                0, 0f, d, 0, d,
+                w, 0f, d , w,d,
+                w, 0f, 0, w, 0
+                });
+        mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
+        
+        Material material = new Material();
+		Texture texture = new Texture(Gdx.files.internal("data/square.png"));
+		texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		material.set(new TextureAttribute(TextureAttribute.Diffuse, texture));
+        
+        Model model = ModelBuilder.createFromMesh(mesh, GL20.GL_TRIANGLES , material);
+        model.manageDisposable(texture);
+        
+        return model;
 	}
 	
 	@Override
