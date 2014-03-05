@@ -1,5 +1,7 @@
 package com.skorulis.drone1.level;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -13,9 +15,9 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.skorulis.drone1.scene.SceneNode;
 
@@ -23,21 +25,45 @@ public class GameLevel implements SceneNode, Disposable{
 
 	public Matrix4 transform;
 	public Model model;
+	public Model wallModel;
 	public ModelInstance modelInstance;
+	
+	public ArrayList<ModelInstance> walls;
 	
 	public GameLevel(int width, int depth) {
 		transform = new Matrix4();
-		ModelBuilder builder = new ModelBuilder();
 		
-		Material material = new Material();
-		Texture texture = new Texture(Gdx.files.internal("data/rock.png"));
-		texture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		material.set(new TextureAttribute(TextureAttribute.Diffuse, texture));
-		
-		//model = builder.createRect(0, 0, 0, 0, 0, depth, width, 0, depth, width, 0, 0, 0, 1, 0, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-		//model.manageDisposable(texture);
 		model = createFloor(width, depth);
 		modelInstance = new ModelInstance(model);
+		
+		Material material = new Material();
+		Texture texture = new Texture(Gdx.files.internal("data/square.png"));
+		material.set(new TextureAttribute(TextureAttribute.Diffuse, texture));
+		
+		ModelBuilder builder = new ModelBuilder();
+		wallModel = builder.createBox(1, 3, 1, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		
+		walls = new ArrayList<ModelInstance>();
+		for(int i = -1; i < width + 1; ++i) {
+			ModelInstance wallInstance = new ModelInstance(wallModel);
+			wallInstance.transform.setToTranslation(new Vector3(i + 0.5f, 1.5f, -0.5f));
+			walls.add(wallInstance);
+			
+			wallInstance = new ModelInstance(wallModel);
+			wallInstance.transform.setToTranslation(new Vector3(i + 0.5f, 1.5f, depth + 0.5f));
+			walls.add(wallInstance);
+		}
+		
+		for(int i = 0; i < depth; ++i) {
+			ModelInstance wallInstance = new ModelInstance(wallModel);
+			wallInstance.transform.setToTranslation(new Vector3(-0.5f, 1.5f, i + 0.5f));
+			walls.add(wallInstance);
+			
+			wallInstance = new ModelInstance(wallModel);
+			wallInstance.transform.setToTranslation(new Vector3(width + 0.5f, 1.5f, i + 0.5f));
+			walls.add(wallInstance);
+		}
+		
 	}
 	
 	public Model createFloor(int w, int d) {
@@ -76,11 +102,13 @@ public class GameLevel implements SceneNode, Disposable{
 	@Override
 	public void render(ModelBatch batch, Environment environment) {
 		batch.render(modelInstance,environment);
+		batch.render(walls,environment);
 	}
 
 	@Override
 	public void dispose() {
 		model.dispose();
+		wallModel.dispose();
 	}
 
 	

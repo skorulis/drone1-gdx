@@ -70,7 +70,7 @@ public class MyGdxGame implements ApplicationListener {
         unit2.target = unit;
         unit.target = unit2;
         
-        level = new GameLevel(10,10);
+        level = new GameLevel(25,25);
         
         assets = new AssetManager();
         
