@@ -1,5 +1,6 @@
 package com.skorulis.drone1.unit;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -16,7 +17,6 @@ public class DroneUnit {
 	public UnitDef def;
 	private ModelInstance hullInstance;
 	private DroneTurret[] turrets;
-	private Vector3 position;
 	public BoundingBox hullBounds;
 	
 	public DroneUnit target;
@@ -24,7 +24,6 @@ public class DroneUnit {
 	public DroneUnit(UnitDef def) {
 		this.def = def;
 		turrets = new DroneTurret[def.hull.maxTurrets()];
-		position = new Vector3(0,0,0);
 	}
 	
 	public void setup(AssetManager assets) {
@@ -37,8 +36,6 @@ public class DroneUnit {
 				turrets[i].setup(assets);
 			}
 		}
-		
-		updateModelPositions();
 	}
 	
 	public void update(float delta) {
@@ -47,7 +44,6 @@ public class DroneUnit {
 				dt.update(delta);
 			}
 		}
-		updateModelPositions();
 	}
 	
 	public void render(ModelBatch batch, Environment environment) {
@@ -60,24 +56,11 @@ public class DroneUnit {
 	}
 	
 	public void setPosition(Vector3 vec) {
-		this.position = vec;
+		hullInstance.transform.setToTranslation(vec);
 	}
 	
 	public Vector3 position() {
-		return position;
-	}
-	
-	private void updateModelPositions() {
-		hullInstance.transform.setTranslation(position);
-		
-		for(int i = 0; i < turrets.length; ++i) {
-			if(turrets[i] != null) {
-				if(target != null) {
-					turrets[i].modelInstance.transform.setToLookAt(position(), target.position(), new Vector3(0,1,0));
-				}
-				
-			}
-		}
+		return hullInstance.transform.getTranslation(new Vector3());
 	}
 	
 	public Matrix4 absTransform() {
