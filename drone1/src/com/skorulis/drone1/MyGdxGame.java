@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.skorulis.drone1.def.DefManager;
 import com.skorulis.drone1.def.UnitDef;
 import com.skorulis.drone1.level.GameLevel;
+import com.skorulis.drone1.player.Player;
 import com.skorulis.drone1.unit.DroneUnit;
 
 public class MyGdxGame implements ApplicationListener {
@@ -38,11 +39,12 @@ public class MyGdxGame implements ApplicationListener {
     public boolean loading;
     
     public DefManager defManager;
-    public DroneUnit unit;
+    public DroneUnit unit, unit2;
     public GameLevel level;
-    
-    public DroneUnit unit2;
+
     public float t = 0;
+    
+    public Player player;
 	
 	@Override
 	public void create() {
@@ -62,10 +64,9 @@ public class MyGdxGame implements ApplicationListener {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         defManager = new DefManager();
-        UnitDef uDef = new UnitDef(defManager.getHull("hull1"));
-        uDef.setTurret(0, defManager.getTurret("turret1"));
-        unit = new DroneUnit(uDef);
-        unit2 = new DroneUnit(uDef);
+        
+        unit = new DroneUnit(defManager.getUnit("unit1"));
+        unit2 = new DroneUnit(defManager.getUnit("unit1"));
         
         unit2.target = unit;
         unit.target = unit2;
@@ -82,11 +83,13 @@ public class MyGdxGame implements ApplicationListener {
         loading = true;
         
         fpsLogger = new FPSLogger();
+        player = new Player(unit);
 	}
 	
 	private void doneLoading() {
 		unit.setup(assets);
 		unit2.setup(assets);
+		unit.absTransform().setTranslation(level.center());
         loading = false;
     }
 
@@ -124,11 +127,11 @@ public class MyGdxGame implements ApplicationListener {
         float x = (float) Math.sin(t) * 5;
         float z = (float) Math.cos(t) * 4;
         
-        unit.setPosition(new Vector3(x,0.0f,z));
+        //unit.setPosition(new Vector3(x,0.0f,z));
         
         unit.update(delta);
 		unit2.update(delta);
-        
+		player.update(delta);
 	}
 
 	@Override

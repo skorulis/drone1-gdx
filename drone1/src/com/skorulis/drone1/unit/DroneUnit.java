@@ -1,6 +1,5 @@
 package com.skorulis.drone1.unit;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -10,15 +9,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.skorulis.drone1.def.UnitDef;
+import com.skorulis.drone1.scene.SceneNode;
 
-public class DroneUnit {
+public class DroneUnit implements SceneNode {
 
-	
 	public UnitDef def;
 	private ModelInstance hullInstance;
 	private DroneTurret[] turrets;
 	public BoundingBox hullBounds;
-	
 	public DroneUnit target;
 	
 	public DroneUnit(UnitDef def) {
@@ -64,6 +62,11 @@ public class DroneUnit {
 	}
 	
 	public Matrix4 absTransform() {
+		return hullInstance.transform;
+	}
+
+	@Override
+	public Matrix4 relTransform() {
 		return hullInstance.transform;
 	}
 	

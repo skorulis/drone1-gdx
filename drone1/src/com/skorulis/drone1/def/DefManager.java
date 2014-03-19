@@ -10,12 +10,15 @@ public class DefManager {
 
 	public Map<String,HullDef> hulls;
 	public Map<String,TurretDef> turrets;
+	public Map<String,UnitDef> units;
 	
 	public DefManager() {
 		hulls = new HashMap<String,HullDef>();
 		turrets = new HashMap<String, TurretDef>();
+		units = new HashMap<String, UnitDef>();
 		loadHulls();
 		loadTurrets();
+		loadUnits();
 	}
 	
 	private void loadHulls() {
@@ -34,6 +37,12 @@ public class DefManager {
 		turrets.put(t.name, t);
 	}
 	
+	private void loadUnits() {
+		UnitDef uDef = new UnitDef(getHull("hull1"));
+        uDef.setTurret(0, getTurret("turret1"));
+        units.put("unit1", uDef);
+	}
+	
 	public HullDef getHull(String name) {
 		HullDef def = hulls.get(name);
 		if(def == null) {
@@ -46,6 +55,14 @@ public class DefManager {
 		TurretDef def = turrets.get(name);
 		if(def == null) {
 			throw new IllegalArgumentException("No turret named " + name);
+		}
+		return def;
+	}
+	
+	public UnitDef getUnit(String name) {
+		UnitDef def = units.get(name);
+		if(def == null) {
+			throw new IllegalArgumentException("No unit named " + name);
 		}
 		return def;
 	}

@@ -30,7 +30,13 @@ public class GameLevel implements SceneNode, Disposable{
 	
 	public ArrayList<ModelInstance> walls;
 	
+	private int width,depth;
+	
+	
 	public GameLevel(int width, int depth) {
+		this.width = width;
+		this.depth = depth;
+		
 		transform = new Matrix4();
 		
 		model = createFloor(width, depth);
@@ -111,6 +117,8 @@ public class GameLevel implements SceneNode, Disposable{
 		wallModel.dispose();
 	}
 
-	
+	public Vector3 center() {
+		return new Vector3(this.width/2.0f, 0, this.depth/2.0f);
+	}
 	
 }
