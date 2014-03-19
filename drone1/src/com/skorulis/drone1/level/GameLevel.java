@@ -47,26 +47,26 @@ public class GameLevel implements SceneNode, Disposable{
 		material.set(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		
 		ModelBuilder builder = new ModelBuilder();
-		wallModel = builder.createBox(1, 3, 1, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		wallModel = builder.createBox(1, 1.5f, 1, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		
 		walls = new ArrayList<ModelInstance>();
 		for(int i = -1; i < width + 1; ++i) {
 			ModelInstance wallInstance = new ModelInstance(wallModel);
-			wallInstance.transform.setToTranslation(new Vector3(i + 0.5f, 1.5f, -0.5f));
+			wallInstance.transform.setToTranslation(new Vector3(i + 0.5f, 0.75f, -0.5f));
 			walls.add(wallInstance);
 			
 			wallInstance = new ModelInstance(wallModel);
-			wallInstance.transform.setToTranslation(new Vector3(i + 0.5f, 1.5f, depth + 0.5f));
+			wallInstance.transform.setToTranslation(new Vector3(i + 0.5f, 0.75f, depth + 0.5f));
 			walls.add(wallInstance);
 		}
 		
 		for(int i = 0; i < depth; ++i) {
 			ModelInstance wallInstance = new ModelInstance(wallModel);
-			wallInstance.transform.setToTranslation(new Vector3(-0.5f, 1.5f, i + 0.5f));
+			wallInstance.transform.setToTranslation(new Vector3(-0.5f, 0.75f, i + 0.5f));
 			walls.add(wallInstance);
 			
 			wallInstance = new ModelInstance(wallModel);
-			wallInstance.transform.setToTranslation(new Vector3(width + 0.5f, 1.5f, i + 0.5f));
+			wallInstance.transform.setToTranslation(new Vector3(width + 0.5f, 0.75f, i + 0.5f));
 			walls.add(wallInstance);
 		}
 		

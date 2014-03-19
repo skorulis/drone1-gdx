@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.skorulis.camera.IsoFollowCamera;
+import com.skorulis.camera.IsoPanCamera;
 import com.skorulis.drone1.def.DefManager;
 import com.skorulis.drone1.level.GameLevel;
 import com.skorulis.drone1.player.Player;
@@ -21,7 +22,7 @@ import com.skorulis.drone1.unit.DroneUnit;
 
 public class MyGdxGame implements ApplicationListener {
 
-	public IsoFollowCamera isoCam;
+	public IsoPanCamera isoCam;
     public ModelInstance instance;
     public ModelBatch modelBatch;
     public Environment environment;
@@ -66,7 +67,9 @@ public class MyGdxGame implements ApplicationListener {
         
         fpsLogger = new FPSLogger();
         player = new Player(unit);
-        isoCam = new IsoFollowCamera(unit);
+        //isoCam = new IsoFollowCamera(unit);
+        isoCam = new IsoPanCamera();
+        Gdx.input.setInputProcessor(isoCam);
 	}
 	
 	private void doneLoading() {
