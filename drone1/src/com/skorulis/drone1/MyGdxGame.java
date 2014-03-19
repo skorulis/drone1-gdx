@@ -5,35 +5,28 @@ import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.skorulis.drone1.def.DefManager;
-import com.skorulis.drone1.def.UnitDef;
 import com.skorulis.drone1.level.GameLevel;
 import com.skorulis.drone1.player.Player;
 import com.skorulis.drone1.unit.DroneUnit;
 
 public class MyGdxGame implements ApplicationListener {
-	public PerspectiveCamera cam;
+	public Camera cam;
     public ModelInstance instance;
     public ModelBatch modelBatch;
     public Environment environment;
-    public CameraInputController camController;
     public FPSLogger fpsLogger;
     public AssetManager assets;
     public boolean loading;
@@ -49,15 +42,9 @@ public class MyGdxGame implements ApplicationListener {
 	@Override
 	public void create() {
 		modelBatch = new ModelBatch();
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(5f, 5f, 5f);
-        cam.lookAt(0,0,0);
+		cam = new OrthographicCamera(20, 20 * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
         cam.near = 0.1f;
-        cam.far = 300f;
-        cam.update();
-        
-        camController = new CameraInputController(cam);
-        Gdx.input.setInputProcessor(camController);
+        cam.far = 100f;
         
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -113,10 +100,10 @@ public class MyGdxGame implements ApplicationListener {
 		
 		t += delta;
 		
-		camController.update();
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
+        cam.update();
         modelBatch.begin(cam);
         level.render(modelBatch, environment);
         unit.render(modelBatch, environment);
@@ -124,18 +111,23 @@ public class MyGdxGame implements ApplicationListener {
         modelBatch.end();
         //fpsLogger.log();
         
-        float x = (float) Math.sin(t) * 5;
-        float z = (float) Math.cos(t) * 4;
-        
-        //unit.setPosition(new Vector3(x,0.0f,z));
-        
         unit.update(delta);
 		unit2.update(delta);
 		player.update(delta);
+		updateCamera(delta);
+	}
+	
+	public void updateCamera(float delta) {
+		Vector3 pos = player.unit.position();
+		cam.position.set(pos.x+5, 5, pos.z+5);
+		cam.direction.set(-1, -1, -1);
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		cam = new OrthographicCamera(20, 20 * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+        cam.near = 0.1f;
+        cam.far = 100f;
 	}
 
 	@Override
