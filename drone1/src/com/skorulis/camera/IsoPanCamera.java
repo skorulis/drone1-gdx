@@ -66,7 +66,6 @@ public class IsoPanCamera implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
-		Gdx.app.log("T", "MOVED ");
 		Ray pickRay = cam.getPickRay(x, y);
 		Intersector.intersectRayPlane(pickRay, xzPlane, curr);
  
